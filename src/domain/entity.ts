@@ -20,5 +20,12 @@ export abstract class Entity<TProps> {
   public getProps(): TProps {
     return this.props;
   }
+
+  public toJSON(): TProps {
+    return {
+      id: this._id,
+      ...this.props,
+    }
+  }
 }
 

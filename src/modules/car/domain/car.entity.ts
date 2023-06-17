@@ -1,4 +1,6 @@
-import { Entity } from "@/domain/entity";
+import { Entity } from "../../../domain/entity";
+
+
 
 export interface CarProps {
   plate: string;

@@ -1,4 +1,4 @@
-import { Entity } from "@/domain/entity";
+import { Entity } from "../domain/entity";
 
 export interface Repository<T extends Entity<unknown>> {
   save(entity: T): Promise<void>;

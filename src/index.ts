@@ -1,6 +1,10 @@
-import { App } from "./server";
+import 'reflect-metadata';
+import application from './server';
+import * as http from 'http';
+const PORT = process.env.PORT || 3000;
 
-const app = new App();
+const server = http.createServer(application.instance);
 
-app.start(3000);
-
+server.listen(PORT, () => {
+  console.log(`Server is listening on :${PORT}`);
+});

@@ -1,24 +1,56 @@
-import { AppRouter } from './app-router';
-import {
-  app,
-} from './infra/express';
+// src/application.ts
+import express, { Application as ExApplication, Handler } from "express";
+import { controllers } from "./application/controllers";
+import { MetadataKeys } from "./utils/metadata.keys";
+import { IRouter } from "./utils/handlers.decorator";
+class Application {
+  private readonly _instance: ExApplication;
+  get instance(): ExApplication {
+    return this._instance;
+  }
+  constructor() {
+    this._instance = express();
+    this._instance.use(express.json());
+    this.registerRouters();
+  }
+  private registerRouters() {
+    this._instance.get("/", (req, res) => {
+      res.json({ message: "Hello World!" });
+    });
+    const info: Array<{ api: string; handler: string }> = [];
+    console.log("Registering routers...");
 
-import { Express } from 'express';
-import { appRouter } from './routes';
+    controllers.forEach((controllerClass) => {
+      const controllerInstance: { [handleName: string]: Handler } =
+        new controllerClass() as any;
 
-export class App {
-    app: Express;
-    router: AppRouter;
-    constructor() {
-        this.app = app;
-        this.router = appRouter
-        this.app.use(this.router.router);
-    }
+      const basePath: string = Reflect.getMetadata(
+        MetadataKeys.BASE_PATH,
+        controllerClass
+      );
+      const routers: IRouter[] = Reflect.getMetadata(
+        MetadataKeys.ROUTERS,
+        controllerClass
+      );
 
-    public start(port: number): void {
-        this.app.listen(port, () => {
-            console.log(`Server listening on port ${port}`);
+      const exRouter = express.Router();
+
+      routers.forEach(({ method, path, handlerName }) => {
+        exRouter[method](
+          path,
+          controllerInstance[String(handlerName)].bind(controllerInstance)
+        );
+
+        info.push({
+          api: `${method.toLocaleUpperCase()} ${basePath + path}`,
+          handler: `${controllerClass.name}.${String(handlerName)}`,
         });
-    }
- 
+      });
+
+      this._instance.use(basePath, exRouter);
+    });
+
+    console.table(info);
+  }
 }
+export default new Application();
