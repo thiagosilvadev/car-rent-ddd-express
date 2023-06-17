@@ -14,11 +14,10 @@ export class UserController {
   constructor() {
     console.log("UserController instantiated");
   }
-  @Post("")
-  async create(request: Request, response: Response) {
-    const { email, name, lastName, password } = request.body;
-    await this.userService.createUser(email, password, name, lastName);
-    return response.status(201).json({ message: "User created" });
-  }
 
+  @Get("")
+  async index(request: Request, response: Response) {
+    const users = await this.userService.findAll();
+    return response.json(users);
+  }
 }

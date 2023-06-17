@@ -31,6 +31,6 @@ export class Password extends ValueObject<PasswordProps, PasswordSchema> {
   }
 
   public toJSON() {
-    return undefined;
+    return this.props.value;
   }
 }

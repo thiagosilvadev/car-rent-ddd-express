@@ -29,4 +29,19 @@ export class UserService {
 
     return user;
   }
+
+  public async login(email: string, password: string): Promise<string> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    const isPasswordCorrect = await user.password.compare(password);
+    if (!isPasswordCorrect) {
+      throw new Error("Password is incorrect");
+    }
+  
+    const token = user.generateToken();
+    return token;
+  }
 }

@@ -1,3 +1,4 @@
+import { sign } from "jsonwebtoken";
 import { Entity } from "../../../../domain/entity";
 import { Email } from "./email.vo";
 import { FullName } from "./fullname.vo";
@@ -44,6 +45,13 @@ export class User extends Entity<UserProps> {
     );
   }
 
+  public generateToken(): string {
+    const token = sign({ id: this.id }, process.env.JWT_SECRET as string, {
+      expiresIn: "1d",
+    });
+    return token;
+  }
+
   public get email(): Email {
     return this.props.email;
   }
@@ -54,5 +62,9 @@ export class User extends Entity<UserProps> {
 
   public get id(): string {
     return this._id;
+  }
+
+  public get password(): Password {
+    return this.props.password;
   }
 }
