@@ -1,10 +1,6 @@
-import { ZodError } from "zod";
+import { ValidationSchema } from "../shared/validation-schema";
 
-interface Schema {
-  parse(value: any): any;
-}
-
-export abstract class BaseDTO<TValue, TSchema extends Schema> {
+export abstract class BaseDTO<TValue, TSchema extends ValidationSchema<TValue>> {
   value: TValue;
   protected constructor(value: TValue, schema: TSchema) {
     this.value = schema.parse(value);

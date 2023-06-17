@@ -1,10 +1,11 @@
 // src/application.ts
 import express, { Application as ExApplication, Handler } from "express";
-import { controllers } from "./application/controllers";
+import { AppConfig } from "./application/app.config";
 import { MetadataKeys } from "./utils/metadata.keys";
 import { IRouter } from "./utils/handlers.decorator";
 class Application {
   private readonly _instance: ExApplication;
+  private readonly _controllers: Array<new () => any> = AppConfig.controllers;
   get instance(): ExApplication {
     return this._instance;
   }
@@ -20,7 +21,7 @@ class Application {
     const info: Array<{ api: string; handler: string }> = [];
     console.log("Registering routers...");
 
-    controllers.forEach((controllerClass) => {
+    this._controllers.forEach((controllerClass) => {
       const controllerInstance: { [handleName: string]: Handler } =
         new controllerClass() as any;
 

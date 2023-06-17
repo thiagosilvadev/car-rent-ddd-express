@@ -17,11 +17,7 @@ export abstract class Entity<TProps> {
     return JSON.stringify(this.props) === JSON.stringify(entity.props);
   }
 
-  public getProps(): TProps {
-    return this.props;
-  }
-
-  public toJSON(): TProps {
+  public toJSON()  {
     return {
       id: this._id,
       ...this.props,

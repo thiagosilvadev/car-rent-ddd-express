@@ -20,14 +20,19 @@ export default class CarController {
     this.carService = new CarService(repo);
   }
 
+  /**
+   * @description Get all cars available or filter by query params 
+   * @param request 
+   * @param response 
+   * @returns 
+   */
   @Get("")
   async index(request: Request, response: Response) {
     const query = request.query;
-    if (Object.keys(query).length > 0) {
-      const cars = await this.carService.findBy(query);
-      return response.json(cars);
-    }
-    const cars = await this.carService.findAll();
+    const cars = await this.carService.findBy({
+      ...query,
+      isAvailable: true,
+    });
     return response.json(cars);
   }
 
