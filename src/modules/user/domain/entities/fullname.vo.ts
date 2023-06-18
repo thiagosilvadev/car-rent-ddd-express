@@ -24,6 +24,14 @@ export class FullName extends ValueObject<
     return `${this.props.name} ${this.props.lastName}`;
   }
 
+  public get name(): string {
+    return this.props.name;
+  }
+
+  public get lastName(): string {
+    return this.props.lastName;
+  }
+
   public toJSON() {
     return this.value;
   }

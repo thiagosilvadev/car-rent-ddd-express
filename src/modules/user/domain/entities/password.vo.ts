@@ -30,6 +30,10 @@ export class Password extends ValueObject<PasswordProps, PasswordSchema> {
     return bcrypt.compare(password, this.props.value);
   }
 
+  public get value(): string {
+    return this.props.value;
+  }
+
   public toJSON() {
     return this.props.value;
   }

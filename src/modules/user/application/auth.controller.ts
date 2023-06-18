@@ -1,29 +1,36 @@
 import { Request, Response } from "express";
 import Controller from "../../../utils/controller.decorator";
-import { UserRepositoryInMemory } from "../infra/user-repository-in-memory";
 import { UserService } from "./user.service";
 import { Post } from "../../../utils/handlers.decorator";
+import { UserRepositoryPrisma } from "../infra/user-repository-prisma";
+import { CreateUserDTO } from "./dto/create-user.dto";
 
-
-const repo = new UserRepositoryInMemory();
+const repo = new UserRepositoryPrisma();
 @Controller("/auth")
 export class AuthController {
   private userService: UserService;
   constructor() {
     this.userService = new UserService(repo);
   }
-  @Post("/login")
-  async login(req: Request, res: Response) { 
+  @Post("/login", {
+    isPublic: true,
+  })
+  async login(req: Request, res: Response) {
     const { email, password } = req.body;
     const token = await this.userService.login(email, password);
     res.json({ token });
   }
 
-  @Post("/signup")
+  @Post("/signup", {
+    isPublic: true,
+  })
   async create(request: Request, response: Response) {
-    const { email, name, lastName, password } = request.body;
-    await this.userService.createUser(email, password, name, lastName);
-    return response.status(201).json({ message: "User created" });
+    try {
+      await this.userService.createUser(CreateUserDTO.parse(request.body));
+      return response.status(201).json({ message: "User created" });
+    } catch (error) {
+      console.log(error);
+      return response.status(500).json({ error: error.message });
+    }
   }
-  
 }

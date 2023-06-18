@@ -8,6 +8,8 @@ export interface UserProps {
   email: Email;
   password: Password;
   fullName: FullName;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 type CreateUserProps = {
@@ -15,6 +17,8 @@ type CreateUserProps = {
   password: string;
   name: string;
   lastName: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export class User extends Entity<UserProps> {
@@ -40,9 +44,15 @@ export class User extends Entity<UserProps> {
         email,
         password,
         fullName,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt,
       },
       id
     );
+  }
+
+  public static restore(props: UserProps, id: string): User {
+    return new User(props, id);
   }
 
   public generateToken(): string {
@@ -66,5 +76,13 @@ export class User extends Entity<UserProps> {
 
   public get password(): Password {
     return this.props.password;
+  }
+
+  public get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  public get updatedAt(): Date | undefined {
+    return this.props.updatedAt;
   }
 }
