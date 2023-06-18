@@ -11,11 +11,47 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String       @id @default(uuid())
+  firstName  String
+  lastName   String
+  email      String       @unique
+  password   String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Appoinment Appoinment[]
+  Payment    Payment[]
+}
+
+model Car {
+  id          String       @id @default(uuid())
+  plate       String       @unique
+  model       String
+  brand       String
+  year        Int
+  color       String
+  price       Float
+  isAvailable Boolean
+  Appoinment  Appoinment[]
+}
+
+model Appoinment {
+  id         String    @id @default(uuid())
+  carId      String
+  userId     String
+  car        Car       @relation(fields: [carId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+  totalPrice Float
+  start      DateTime
+  end        DateTime
+  Payment    Payment[]
+}
+
+model Payment {
+  id           String     @id @default(uuid())
+  userId       String
+  appoinmentId String
+  status       String
+  method       String
+  user         User       @relation(fields: [userId], references: [id])
+  appoinment   Appoinment @relation(fields: [appoinmentId], references: [id])
 }

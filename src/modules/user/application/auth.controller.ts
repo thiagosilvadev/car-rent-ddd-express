@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import Controller from "../../../utils/controller.decorator";
+import Controller from "@/utils/controller.decorator";
 import { UserService } from "./user.service";
-import { Post } from "../../../utils/handlers.decorator";
+import { Post } from "@/utils/handlers.decorator";
 import { UserRepositoryPrisma } from "../infra/user-repository-prisma";
 import { CreateUserDTO } from "./dto/create-user.dto";
 
@@ -29,8 +29,8 @@ export class AuthController {
       await this.userService.createUser(CreateUserDTO.parse(request.body));
       return response.status(201).json({ message: "User created" });
     } catch (error) {
-      console.log(error);
-      return response.status(500).json({ error: error.message });
+      const { message } = error as Error;
+      return response.status(500).json({ error: message });
     }
   }
 }

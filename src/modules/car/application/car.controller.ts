@@ -8,9 +8,9 @@ import { CarService } from "./car.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { ZodError } from "zod";
 import { UpdateCarDTO } from "./dto/update-car.dto";
+import { CarRepositoryPrisma } from "../infra/repositories/car-repostiory-prisma";
 
-const repo = new CarRepositoryInMemory();
-carSeeder(repo, 10);
+const repo = new CarRepositoryPrisma();
 
 @Controller("/cars")
 export default class CarController {
